@@ -1,197 +1,93 @@
-# Presentation slides with Reveal.js
+# A Survey on Uncertainty Quantification Methods for Deep Learning
 
-Chrysa's slides, 2025
-
----
-
-# Why Reveal.js?
-
-- Cross-platform
-- Markdown-based
-- Supports math with LaTeX
-- Looks great
+Chrysoula, July 2025
 
 ---
 
-# Inline Math
 
-Einstein's formula: $E = mc^2$
+# Introduction
+<div style="max-width: 1000px; margin: 0 auto; text-align: left;">
 
----
+Uncertainty quantification (UQ) aims to estimate the confidence of DNN predictions in addition to
+prediction accuracy. DNNs can make unexpected, incorrect and overconfident predictions, particularly in complex real-world scenarios.
+UQ assigns uncertainty scores to DNN predictions, addressing data and model uncertainty.
+This survey looks at different ways to measure uncertainty in Deep Neural Networks (DNNs). 
+ 
+There are two main types of uncertainty:
+- Data Uncertainty (Aleatoric): Comes from inherent noise or ambiguous labels.
+- Model Uncertainty (Epistemic): Comes from the lack of evidence or knowledge during model training
+or inference, e.g., limited training samples.
 
-# Block Math
-
-$$
-\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}
-$$
-
----
-
-# Vertical slides
-
-This is the parent of vertical slides.
-
---
-## Vertical slide 1
-
-This is a vertical slide under the parent slide.
-
---
-## Vertical slide 2
-
-Another vertical slide under the parent slide.
-
----
-
-# Add figures
-
-Add a figure with Markdown code
-
-```markdown
-    ![Histogram of the solution of a bistable ODE](figures/demo.png)
-```
-
-![Histogram](figures/demo.png)
-
---
-
-or with HTML code for more control
-
-```html
-<img src="figures/demo.png" alt="Histogram" width="400">
-```
-
-<img src="figures/demo.png" alt="Histogram" width="400">
-
---
-
-or with percentage
-
-```html
-<img src="figures/demo.png" alt="Histogram" style="width:40%">
-```
-
-<img src="figures/demo.png" alt="Histogram" style="width:40%">
-
---
-
-You can add a caption like this
-```html
-<figure>
-  <img src="figures/demo.png" alt="Time series" style="width:70%">
-  <figcaption>Figure 1: Histogram of the solution of a bistable ODE</figcaption>
-</figure>
-```
-
-<figure>
-  <img src="figures/demo.png" alt="Time series" style="width:70%">
-  <figcaption>Figure 1: Histogram of the solution of a bistable ODE</figcaption>
-</figure>
-
----
-
-# Show a video
-
-```html
-<video src="media/video.mp4" autoplay muted loop style="width: 60%"></video>
-```
-
-<video src="media/video.mp4" autoplay muted loop style="width: 60%"></video>
+</div>
 
 
 ---
 
-# Code blocks
+# Taxonomy of UQ methods for DNNS  
+<div style="max-width: 1000px; margin: 0 auto; text-align: left;">
 
-<pre><code class="language-python" data-trim>
-def fibonacci(n):
-    if n <= 1:
-        return n
-    return fibonacci(n-1) + fibonacci(n-2)
-</code></pre>
+**Model uncertainty:**
+
+</div>
 
 
---
-
-# Code blocks with highlighting
-
-<pre><code class="language-python" data-trim data-line-numbers="3,5-6,10">
-import numpy as np
-import matplotlib.pyplot as plt
-
-def simulate_ode(f, y0, t):
-    """Simple forward Euler ODE solver."""
-    y = np.zeros_like(t)
-    y[0] = y0
-    for i in range(1, len(t)):
-        dt = t[i] - t[i-1]
-        y[i] = y[i-1] + dt * f(t[i-1], y[i-1])
-    return y
-
-# Example usage
-f = lambda t, y: -0.5 * y
-t = np.linspace(0, 10, 100)
-y = simulate_ode(f, 1.0, t)
-
-plt.plot(t, y)
-plt.title("Exponential Decay")
-plt.xlabel("Time")
-plt.ylabel("y(t)")
-plt.grid()
-plt.show()
-</code></pre>
-
-
---
-
-<section>
-  <h3>Code blocks with animations</h3>
-
-  <div class="fragment">
-    <pre><code class="language-python" data-trim data-line-numbers>
-import numpy as np
-import matplotlib.pyplot as plt
-    </code></pre>
-  </div>
-
-  <div class="fragment">
-    <pre><code class="language-python" data-trim data-line-numbers>
-def simulate_ode(f, y0, t):
-    """Simple forward Euler ODE solver."""
-    y = np.zeros_like(t)
-    y[0] = y0
-    for i in range(1, len(t)):
-        dt = t[i] - t[i-1]
-        y[i] = y[i-1] + dt * f(t[i-1], y[i-1])
-    return y
-    </code></pre>
-  </div>
-
-  <div class="fragment">
-    <pre><code class="language-python" data-trim data-line-numbers>
-f = lambda t, y: -0.5 * y
-t = np.linspace(0, 10, 100)
-y = simulate_ode(f, 1.0, t)
-    </code></pre>
-  </div>
-
-  <div class="fragment">
-    <pre><code class="language-python" data-trim data-line-numbers>
-plt.plot(t, y)
-plt.title("Exponential Decay")
-plt.xlabel("Time")
-plt.ylabel("y(t)")
-plt.grid()
-plt.show()
-    </code></pre>
-  </div>
-</section>
-
-
+- Bayesian Neural Network (BNN): Learn the posterior distribution of model parameters to reflect parameter uncertainty.
+- Monte Carlo (MC) dropout: Uncertainty estimation can be obtained by computing the variance of multiple forward passes, each using a different pattern of deactivated neurons via dropout. 
+- Ensemble models: Combine multiple neural networks to form an output distribution, quantifying model uncertainty through the variability of the distribution. 
+- Sample distribution-related methods: These include two cases. The first one includes test samples that follow a different distribution than training samples (OOD scenario), while in the second a test sample is far from other training samples or is surrounded by sparse training samples. Existing approaches for the second case include Gaussian process hybrid neural networks and distance-aware neural networks. 
 
 ---
 
-### 🦧 That is all 🦧
+# Taxonomy of UQ methods for DNNS  
+
+<div style="max-width: 1000px; margin: 0 auto; text-align: left;">
+
+**Data uncertainty:**
+
+</div>
+
+- Deep discriminative models: Outputs a predictive distribution directly using a neural network, modeled as a parametric or non-parametric model.
+- Deep generative models learn the complex, high-dimensional data distribution, employing variational autoencoders (VAEs), generative adversarial networks (GANs) and diffusion models.
+
+
+<div style="max-width: 1000px; margin: 0 auto; text-align: left;">
+
+**Combination of model and data uncertainty:**
+
+</div>
+
+
+- Combine BNN model or Ensemble model with prediction distribution.
+- Combine ensemble model with prediction interval.
+- Evidential Deep Learning.
+- Conformal Prediction.
+
+---
+
+# Uncertainty Estimation in Various Machine Learning Problems
+- Out-of-distribution detection: A DNN model should be able to recognize out-of-distribution (OOD) samples that differ from the training data distribution.
+- Active learning: Active learning aims to solve the data labeling issue by prioritizing instances where predictions are most uncertain.
+- Deep Reinforcement Learning: It aims to train an agent with the environment to maximize its total rewards.
+
+---
+# Future Direction
+- UQ for Large Language Models: LLMs sometimes generate over-confident outputs that are incorrect. Designing UQ methods for LLMs is essential for improving trustworthiness.
+- UQ for Deep Learning in Scientific Simulations: UQ for deep learning in scientific simulation is crucial in high-stake decision-making applications (e.g., disaster response).
+- Combine UQ with DNN Explainability: Combining uncertainty quantification and explanation are important for a robust, trustworthy AI model.
+
+---
+# Conclusion
+- This paper categorizes Uncertainty Quantification (UQ) methods for deep neural networks (DNNs) into three groups: model uncertainty, data uncertainty and their combination.
+- It analyzes and evaluates strengths and weaknesses of each approach based on the type of uncertainty addressed. (This part is not mentioned in the presentation!)
+- It summarizes the sources of uncertainty across various machine learning problems and proposes future research directions.
+
+---
+# References 
+- [1] W. He, Z. Jiang, T. Xiao, Z. Xu, and Y. Li, “A survey on uncertainty quantification methods for deep learning,” *arXiv preprint arXiv:2302.13425*, 2023. DOI: https://doi.org/10.48550/arXiv.2302.13425
+
+
+---
+# Thank you!
 
 
 
