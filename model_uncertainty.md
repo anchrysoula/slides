@@ -1,0 +1,232 @@
+# A Survey on Uncertainty Quantification Methods for Deep Learning
+Chrysoula, August 2025
+
+
+---
+
+# Model uncertainty
+
+- Comes from the lack of evidence or knowledge during model training or inference, e.g., limited training samples, sub-optinal DNN model architectures or parameter algorithms and out-of-distribution samples (ODD).
+- It is reducible given more data.
+
+---
+
+# Types of model uncertainty
+
+- Choice of model hyper-parameters (e.g., choice of model families, number of neural network layers, hidden layer dimension.)
+- Uncertainty in model parameter learning (e.g., the choice of optimizers.)
+- Uncertainty due to different sample distributions in learning and inference(e.g., out-of-distribution samples (OOD).)
+
+---
+
+# Categories of model uncertainty
+
+- Bayesian Neural Networks 
+   - Variational Inference (VI)
+   - Laplace approximation
+   - Markov Chain Monte Carlo approximation (MCMC)
+   - Monte-Carlo (MC) dropout
+-  Ensemble methods
+-  Sample distribution-related methods (Not mentioned here!)
+  
+---
+
+# Bayesian Neural Networks
+### Variational Inference (VI)
+- We find a variational approximation to the Bayesian posterior distribution on the weights by maximizing the evidence lower bound (ELBO)
+of the log marginal likelihood:
+$$
+\log p(Y \mid X) \geq \mathbb{E}_{\theta \sim q_\phi(\theta)} \left[ \log \frac{p(Y \mid X, \theta) p(\theta)}{q_\phi(\theta)} \right] 
+= \mathbb{E}_{\theta \sim q_\phi(\theta)} \left[ \log p(Y \mid X, \theta) \right] - \mathrm{KL}(q_\phi(\theta) \,\|\, p(\theta))
+$$
+- The posterior $ p(\theta \mid X, Y)$ is approximated with a parametric distribution $ q_\phi(\theta)$.
+- The first term is the log- likelihood of the training data on the neural network model, while the second is the Kullback-Leiber (KL) divergence between the posterior estimation and the prior of the model parameters, which controls the complexity.
+
+--
+
+
+# Challenges of VI: Choosing the distribution class $ q_\phi(\theta)$.
+- Mean-Field Variational Inference:
+  - Uses a Gaussian distribution with diagonal covariance.
+  - Offers a simple lower bound for optimization.
+  - Limitation: poor at capturing posterior correlations between parameters.
+- Full Covariance Gaussian Approaches:
+  -  Extend diagonal covariance to general covariance matrices.
+  -  Better at capturing parameter correlations.
+  -  It is tractable via ELBO maximization.
+  -  Disadvantage: it increases the number of tractable parameters, the memory and the computational cost.
+- Covariance matrix structure with ceratin assumptions:
+  -
+
+
+
+
+
+
+
+
+
+
+--
+## Vertical slide 1
+
+This is a vertical slide under the parent slide.
+
+--
+## Vertical slide 2
+
+Another vertical slide under the parent slide.
+
+---
+
+# Add figures
+
+Add a figure with Markdown code
+
+```markdown
+    ![Histogram of the solution of a bistable ODE](figures/demo.png)
+```
+
+![Histogram](figures/demo.png)
+
+--
+
+or with HTML code for more control
+
+```html
+<img src="figures/demo.png" alt="Histogram" width="400">
+```
+
+<img src="figures/demo.png" alt="Histogram" width="400">
+
+--
+
+or with percentage
+
+```html
+<img src="figures/demo.png" alt="Histogram" style="width:40%">
+```
+
+<img src="figures/demo.png" alt="Histogram" style="width:40%">
+
+--
+
+You can add a caption like this
+```html
+<figure>
+  <img src="figures/demo.png" alt="Time series" style="width:70%">
+  <figcaption>Figure 1: Histogram of the solution of a bistable ODE</figcaption>
+</figure>
+```
+
+<figure>
+  <img src="figures/demo.png" alt="Time series" style="width:70%">
+  <figcaption>Figure 1: Histogram of the solution of a bistable ODE</figcaption>
+</figure>
+
+---
+
+# Show a video
+
+```html
+<video src="media/video.mp4" autoplay muted loop style="width: 60%"></video>
+```
+
+<video src="media/video.mp4" autoplay muted loop style="width: 60%"></video>
+
+
+---
+
+# Code blocks
+
+<pre><code class="language-python" data-trim>
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+</code></pre>
+
+
+--
+
+# Code blocks with highlighting
+
+<pre><code class="language-python" data-trim data-line-numbers="3,5-6,10">
+import numpy as np
+import matplotlib.pyplot as plt
+
+def simulate_ode(f, y0, t):
+    """Simple forward Euler ODE solver."""
+    y = np.zeros_like(t)
+    y[0] = y0
+    for i in range(1, len(t)):
+        dt = t[i] - t[i-1]
+        y[i] = y[i-1] + dt * f(t[i-1], y[i-1])
+    return y
+
+# Example usage
+f = lambda t, y: -0.5 * y
+t = np.linspace(0, 10, 100)
+y = simulate_ode(f, 1.0, t)
+
+plt.plot(t, y)
+plt.title("Exponential Decay")
+plt.xlabel("Time")
+plt.ylabel("y(t)")
+plt.grid()
+plt.show()
+</code></pre>
+
+
+--
+
+<section>
+  <h3>Code blocks with animations</h3>
+
+  <div class="fragment">
+    <pre><code class="language-python" data-trim data-line-numbers>
+import numpy as np
+import matplotlib.pyplot as plt
+    </code></pre>
+  </div>
+
+  <div class="fragment">
+    <pre><code class="language-python" data-trim data-line-numbers>
+def simulate_ode(f, y0, t):
+    """Simple forward Euler ODE solver."""
+    y = np.zeros_like(t)
+    y[0] = y0
+    for i in range(1, len(t)):
+        dt = t[i] - t[i-1]
+        y[i] = y[i-1] + dt * f(t[i-1], y[i-1])
+    return y
+    </code></pre>
+  </div>
+
+  <div class="fragment">
+    <pre><code class="language-python" data-trim data-line-numbers>
+f = lambda t, y: -0.5 * y
+t = np.linspace(0, 10, 100)
+y = simulate_ode(f, 1.0, t)
+    </code></pre>
+  </div>
+
+  <div class="fragment">
+    <pre><code class="language-python" data-trim data-line-numbers>
+plt.plot(t, y)
+plt.title("Exponential Decay")
+plt.xlabel("Time")
+plt.ylabel("y(t)")
+plt.grid()
+plt.show()
+    </code></pre>
+  </div>
+</section>
+
+
+
+---
+
+### 🦧 That is all 🦧
+
+
