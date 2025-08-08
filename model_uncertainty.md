@@ -33,8 +33,7 @@ Chrysoula, August 2025
 
 # Bayesian Neural Networks
 ### Variational Inference (VI)
-- We find a variational approximation to the Bayesian posterior distribution on the weights by maximizing the evidence lower bound (ELBO)
-of the log marginal likelihood:
+- We find a variational approximation to the Bayesian posterior distribution on the weights by maximizing the evidence lower bound (ELBO) of the log marginal likelihood:
 $$
 \log p(Y \mid X) \geq \mathbb{E}_{\theta \sim q_\phi(\theta)} \left[ \log \frac{p(Y \mid X, \theta) p(\theta)}{q_\phi(\theta)} \right] 
 = \mathbb{E}_{\theta \sim q_\phi(\theta)} \left[ \log p(Y \mid X, \theta) \right] - \mathrm{KL}(q_\phi(\theta) \,\|\, p(\theta))
@@ -44,8 +43,7 @@ $$
 
 --
 
-
-# Challenges of VI: Choosing the distribution class $ q_\phi(\theta)$.
+## Challenges of VI: Choosing the distribution class $ q_\phi(\theta)$.
 - Mean-Field Variational Inference:
   - Uses a Gaussian distribution with diagonal covariance.
   - Offers a simple lower bound for optimization.
@@ -56,177 +54,198 @@ $$
   -  It is tractable via ELBO maximization.
   -  Disadvantage: it increases the number of tractable parameters, the memory and the computational cost.
 - Covariance matrix structure with ceratin assumptions:
-  -
-
-
-
-
-
-
-
-
-
-
+  - Block-Diagonal Covariance: 
+    - Assumes independence among layers.
+    - Leads to block-diagonal structure.
+  - Low-Rank Structure:
+    - A variety of deep BNNs using Gaussian VI often show low-rank posterior structure.
+    - Solution: Low-rank factorization of dense covariance matrix.
+  - Diagonal plus low-rank:
+    - Combines diagonal and low-rank components for flexibility and speed.
+  - Sparse and Hierarchical Posterior Approaches:
+    - Use hierarchical posteriors or normalizing flows with low-dimensional auxiliary variables.
+    - Goal: Reduce computation.
+  
 --
-## Vertical slide 1
+## Disadvantage of variational Gaussian approximation
 
-This is a vertical slide under the parent slide.
-
---
-## Vertical slide 2
-
-Another vertical slide under the parent slide.
+- Capturing full correlations among latent weights requires a full covariance matrix.
+- Number of variational parameters scales quadratically with the number of latent weights.
 
 ---
-
-# Add figures
-
-Add a figure with Markdown code
-
-```markdown
-    ![Histogram of the solution of a bistable ODE](figures/demo.png)
-```
-
-![Histogram](figures/demo.png)
-
+# Bayesian Neural Networks
+## Laplace approximation
+- It approximates the posterior around the MAP estimator of neural network weights with a Gaussian distribution based on the Hessian of the log-likelihood.
+- It can be applied post-hoc to a pre-trained neural network model.
+- The posterior approximation is:
+$$p(\theta \mid X, Y) \approx \mathcal{N}(\hat{\theta}, H^{-1})$$
+where $\hat \theta$ is the MAP estimate and $H$ is the Hessian matrix.
+- It approximates the posterior locally and simplifies the computation of the posterior.
+  
 --
 
-or with HTML code for more control
-
-```html
-<img src="figures/demo.png" alt="Histogram" width="400">
-```
-
-<img src="figures/demo.png" alt="Histogram" width="400">
+## Disadvantages of Laplace approximation
+- It is a local approximation around the MAP mode.
+- Cannot model multi-modal posteriors.
+- The Hessian inversion is computationally expensive for millions of parameters.
 
 --
-
-or with percentage
-
-```html
-<img src="figures/demo.png" alt="Histogram" style="width:40%">
-```
-
-<img src="figures/demo.png" alt="Histogram" style="width:40%">
-
+## Hessian Approximation Techniques
+- Ignore covariance between weights and extract the diagonal of the Hessian matrix.
+- Kronecker factored approximations:
+  - Factorizes Hessian into Kronecker product of smaller matrices.
+  - Scales to deep convolutional networks.
+  - Enables Bayesian online learning.
+  - Assumes layer independence, which may lead to an overestimation of the variance.
+  
 --
-
-You can add a caption like this
-```html
-<figure>
-  <img src="figures/demo.png" alt="Time series" style="width:70%">
-  <figcaption>Figure 1: Histogram of the solution of a bistable ODE</figcaption>
-</figure>
-```
-
-<figure>
-  <img src="figures/demo.png" alt="Time series" style="width:70%">
-  <figcaption>Figure 1: Histogram of the solution of a bistable ODE</figcaption>
-</figure>
-
+## Calibration of the predictive uncertainty
+- Tuning Prior Precision:
+   - Adjusts Gaussian prior precision to regularize the approximation.
+   - Helps avoid placing probability mass in low-probability regions.
+   - Requires validation-based optimization, which may not generalize well.
+- Uncertainty-Aware Training with Hidden Units:
+  - Adds extra hidden units to MLP-trained networks.
+  - Trains with an uncertainty-aware objective.
+  - Improves uncertainty calibration.
+  - It is only applicable to MLPs, not generalizable to CNNs.
+  
+--
+## Comparison of Laplace approximation with Variational Inference.
+- Laplace approximation:
+   - It is local around MAP.
+   - It is post hoc (after training).
+   - No impact on prediction performance.
+- Variational Inference:
+   - It is global (entire posterior).
+   - It is used during training.
+   - It has an impact on prediction performance.
+  
 ---
-
-# Show a video
-
-```html
-<video src="media/video.mp4" autoplay muted loop style="width: 60%"></video>
-```
-
-<video src="media/video.mp4" autoplay muted loop style="width: 60%"></video>
-
-
----
-
-# Code blocks
-
-<pre><code class="language-python" data-trim>
-def fibonacci(n):
-    if n <= 1:
-        return n
-    return fibonacci(n-1) + fibonacci(n-2)
-</code></pre>
-
+# Bayesian Neural Networks:
+## Markov Chain Monte Carlo (MCMC) approximation 
+- It samples from an intractable distribution.
+- The goal is to approximate the posterior $p(\theta|X,Y)$ for Bayesian inference.
+- It constructs an ergodic Markov chain whose stationary distribution is the posterior and draws samples $\theta_i \sim p(\theta|X,Y)$ from the chain.
+- The inference step of BNNs is approximated by:
+$$
+p(y^* \mid x^*, X, Y) = \int p(y^* \mid \mathbf{x}^*, \boldsymbol{\theta}) \, p(\boldsymbol{\theta} \mid X, Y) \, d\boldsymbol{\theta} 
+\approx \frac{1}{N} \sum_{i=1}^{N} p(y^* \mid x^*, \boldsymbol{\theta}_i)
+$$
 
 --
-
-# Code blocks with highlighting
-
-<pre><code class="language-python" data-trim data-line-numbers="3,5-6,10">
-import numpy as np
-import matplotlib.pyplot as plt
-
-def simulate_ode(f, y0, t):
-    """Simple forward Euler ODE solver."""
-    y = np.zeros_like(t)
-    y[0] = y0
-    for i in range(1, len(t)):
-        dt = t[i] - t[i-1]
-        y[i] = y[i-1] + dt * f(t[i-1], y[i-1])
-    return y
-
-# Example usage
-f = lambda t, y: -0.5 * y
-t = np.linspace(0, 10, 100)
-y = simulate_ode(f, 1.0, t)
-
-plt.plot(t, y)
-plt.title("Exponential Decay")
-plt.xlabel("Time")
-plt.ylabel("y(t)")
-plt.grid()
-plt.show()
-</code></pre>
-
+# Bayesian Neural Networks:
+## How the MCMC works:
+- Each sample depends only on the previous sample.
+- It uses a proposal distribution $T(\theta'|\theta)$ to suggest new states.
+- The proposal samples are stochastically accepted with acceptance probability:
+$$
+\alpha(\theta', \theta) = \frac{T(\theta' \mid \theta) \, p(\theta' \mid x)}{T(\theta \mid \theta') \, p(\theta \mid x)}
+$$
+- The new sample is accepted if a random variable $\mu \sim Unif(0,1)$ is less than $\alpha$, otherwise retains the previous sample.
 
 --
+# Bayesian Neural Networks:
+## Challenges of MCMC:
+- Random walk behavior from isotropic Gaussian proposals slows exploration.
+- High rejection rate and slow convergence.
+- Issues due to high-dimensional parameter spaces in modern DNNs.
+## Recent Improvements:
+- Focus on efficient sampling and faster convergence.
+- Hybrid methods combine MCMC with variational inference (VI)
+   - VI is faster but may poorly approximate the true posterior.
+   - MCMC can approximate the exact posterior with a sufficient number of iterations.
+- Markov Chain Variational Inference (MCVI):
+   - It interprets the Markov chain as a variational approximation over an expanded space.
+   - It uses an auxiliary variational distribution $
+r(\theta_0, \dots, \theta_{T-1})
+$.
+- The samples can be obtained by optimizing the lower bound over the parameters with a neural network.
 
-<section>
-  <h3>Code blocks with animations</h3>
+--
+## Advantages and disadvantages of MCMC:
+### Advantages:
 
-  <div class="fragment">
-    <pre><code class="language-python" data-trim data-line-numbers>
-import numpy as np
-import matplotlib.pyplot as plt
-    </code></pre>
-  </div>
+- Samples converge to the exact posterior with enough iterations.
+- Trade-off control: Balance between accuracy and computational cost. 
 
-  <div class="fragment">
-    <pre><code class="language-python" data-trim data-line-numbers>
-def simulate_ode(f, y0, t):
-    """Simple forward Euler ODE solver."""
-    y = np.zeros_like(t)
-    y[0] = y0
-    for i in range(1, len(t)):
-        dt = t[i] - t[i-1]
-        y[i] = y[i-1] + dt * f(t[i-1], y[i-1])
-    return y
-    </code></pre>
-  </div>
-
-  <div class="fragment">
-    <pre><code class="language-python" data-trim data-line-numbers>
-f = lambda t, y: -0.5 * y
-t = np.linspace(0, 10, 100)
-y = simulate_ode(f, 1.0, t)
-    </code></pre>
-  </div>
-
-  <div class="fragment">
-    <pre><code class="language-python" data-trim data-line-numbers>
-plt.plot(t, y)
-plt.title("Exponential Decay")
-plt.xlabel("Time")
-plt.ylabel("y(t)")
-plt.grid()
-plt.show()
-    </code></pre>
-  </div>
-</section>
-
+### Disadvantages:
+- Unknown number of iterations for convergence. 
+- Computationally expensive and time-consuming. 
+  
+--- 
+# Bayesian Neural Networks
+## Monte Carlo (MC) Dropout
+- It is a popular method for uncertainty quantification in DNNs.
+- The optimization of a neural network with a dropout layer can be interpreted as variational inference on a Bernoulli distribution over weights. 
+## Concept:
+- Dropout randomly deactivates neurons during forward passes.
+- Multiple stochastic forward passes with different dropout masks.
+- Variance of predictions across passes estimates model uncertainty.
+- It spproximates integration over model weights using Bernoulli variational distribution.
+  
+--
+## Advantages and Disadvantages of MC dropout
+### Advantages:
+- Minimal modification to the architecture design
+- It is easy to implement in existing DNNs.
+- It affects only inference, not training.
+- It preserves model accuracy.
+### Disadvantages 
+- It is less calibrated than other uncertainty quantification methods.
+- Approximation may lead to less accurate uncertainty estimates.
+- It is still a computationally intensive method.
 
 
 ---
+# Ensemble methods
+- Combine multiple neural networks to form an output distribution.
+- Model uncertainty is quantified by the variability in predictions.
+- Capture uncertainty from various sources using different ensemble strategies.
 
-### 🦧 That is all 🦧
+--
+## Strategies
+## First strategy: Bootstrapping
+- Random sampling from original dataset with replacement.
+- Train each model on a different bootstrapped sample.
+- Aggregate predictions for inference:
+   - For regression: prediction variance is used.
+   - For classification: average entropy is used.
+## Second strategy: Different neural network architectures
+- The number of layers, hidden neurons and activation functions is varying.
+- Accounts for uncertainty from model misspecification
+  
+--
+# Strategies 
+## Third strategy: Initialization and Data Shuffling
+- It uses different parameter initializations.
+- It applies random shuffling of datasets.
+- It utilizes more data per model than bootstrapping.
+## Fourth strategy: Hyperensemble Approach
+- It constructs ensembles with different hyperparameters such as learning rate, optimizer, training strategy.
+  
+--
+## Limitations of Ensemble Models
+- High computational cost since it  requires training and storing multiple networks.
+- Memory maintance during inference.
+- Requires model diversity for accurate uncertainty estimation.
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+---
+
+###  Thank you!
 
 
