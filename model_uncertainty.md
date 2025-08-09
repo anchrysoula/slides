@@ -171,7 +171,7 @@ $.
 - The samples can be obtained by optimizing the lower bound over the parameters with a neural network.
 
 --
-## Advantages and disadvantages of MCMC:
+# Advantages and disadvantages of MCMC:
 ### Advantages:
 
 - Samples converge to the exact posterior with enough iterations.
@@ -180,8 +180,11 @@ $.
 ### Disadvantages:
 - Unknown number of iterations for convergence. 
 - Computationally expensive and time-consuming. 
-  
---- 
+
+
+
+---
+
 # Bayesian Neural Networks
 ## Monte Carlo (MC) Dropout
 - It is a popular method for uncertainty quantification in DNNs.
@@ -190,8 +193,8 @@ $.
 - Dropout randomly deactivates neurons during forward passes.
 - Multiple stochastic forward passes with different dropout masks.
 - Variance of predictions across passes estimates model uncertainty.
-- It spproximates integration over model weights using Bernoulli variational distribution.
-  
+- It approximates integration over model weights using Bernoulli variational distribution.
+
 --
 ## Advantages and Disadvantages of MC dropout
 ### Advantages:
@@ -239,17 +242,6 @@ $.
 - High computational cost since it  requires training and storing multiple networks.
 - Memory maintance during inference.
 - Requires model diversity for accurate uncertainty estimation.
-
-
-
-
-   
-
-
-
-
-
-
 
 
 
