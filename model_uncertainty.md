@@ -13,9 +13,9 @@ Chrysoula, August 2025
 
 # Types of model uncertainty
 
-- Choice of model hyper-parameters (e.g., choice of model families, number of neural network layers, hidden layer dimension.)
-- Uncertainty in model parameter learning (e.g., the choice of optimizers.)
-- Uncertainty due to different sample distributions in learning and inference(e.g., out-of-distribution samples (OOD).)
+- Choice of model hyper-parameters (e.g., choice of model families, number of neural network layers, hidden layer dimension).
+- Uncertainty in model parameter learning (e.g., the choice of optimizers).
+- Uncertainty due to different sample distributions in learning and inference (e.g., out-of-distribution samples (OOD)).
 
 ---
 
@@ -34,16 +34,22 @@ Chrysoula, August 2025
 # Bayesian Neural Networks
 ### Variational Inference (VI)
 - We find a variational approximation to the Bayesian posterior distribution on the weights by maximizing the evidence lower bound (ELBO) of the log marginal likelihood:
+ 
 $$
-\log p(Y \mid X) \geq \mathbb{E}_{\theta \sim q_\phi(\theta)} \left[ \log \frac{p(Y \mid X, \theta) p(\theta)}{q_\phi(\theta)} \right] 
-= \mathbb{E}_{\theta \sim q_\phi(\theta)} \left[ \log p(Y \mid X, \theta) \right] - \mathrm{KL}(q_\phi(\theta) \,\|\, p(\theta))
+\log p(Y \mid X) 
+\geq \mathbb{E}_{\theta \sim q_\phi(\theta)} \left[ \log \frac{p(Y \mid X, \theta) p(\theta)}{q_\phi(\theta)} \right] = 
 $$
+
+$$
+\mathbb{E}_{\theta \sim q_\phi(\theta)} \left[ \log p(Y \mid X, \theta) \right] - \mathrm{KL}(q_\phi(\theta) \\|\ p(\theta))
+$$
+
 - The posterior $ p(\theta \mid X, Y)$ is approximated with a parametric distribution $ q_\phi(\theta)$.
 - The first term is the log- likelihood of the training data on the neural network model, while the second is the Kullback-Leiber (KL) divergence between the posterior estimation and the prior of the model parameters, which controls the complexity.
 
 --
 
-## Challenges of VI: Choosing the distribution class $ q_\phi(\theta)$.
+## Challenges of VI: Choosing the distribution class $ q_\phi(\theta)$
 - Mean-Field Variational Inference:
   - Uses a Gaussian distribution with diagonal covariance.
   - Offers a simple lower bound for optimization.
@@ -57,6 +63,8 @@ $$
   - Block-Diagonal Covariance: 
     - Assumes independence among layers.
     - Leads to block-diagonal structure.
+  
+--
   - Low-Rank Structure:
     - A variety of deep BNNs using Gaussian VI often show low-rank posterior structure.
     - Solution: Low-rank factorization of dense covariance matrix.
@@ -129,7 +137,7 @@ where $\hat \theta$ is the MAP estimate and $H$ is the Hessian matrix.
 - It constructs an ergodic Markov chain whose stationary distribution is the posterior and draws samples $\theta_i \sim p(\theta|X,Y)$ from the chain.
 - The inference step of BNNs is approximated by:
 $$
-p(y^* \mid x^*, X, Y) = \int p(y^* \mid \mathbf{x}^*, \boldsymbol{\theta}) \, p(\boldsymbol{\theta} \mid X, Y) \, d\boldsymbol{\theta} 
+p(y^* \mid x^*, X, Y) = \int p(y^* \mid \mathbf{x}^*, \boldsymbol{\theta}) \ p(\boldsymbol{\theta} \mid X, Y) \, d\boldsymbol{\theta} 
 \approx \frac{1}{N} \sum_{i=1}^{N} p(y^* \mid x^*, \boldsymbol{\theta}_i)
 $$
 
@@ -216,11 +224,13 @@ $.
 - Accounts for uncertainty from model misspecification
   
 --
-# Strategies 
+
 ## Third strategy: Initialization and Data Shuffling
 - It uses different parameter initializations.
 - It applies random shuffling of datasets.
 - It utilizes more data per model than bootstrapping.
+
+
 ## Fourth strategy: Hyperensemble Approach
 - It constructs ensembles with different hyperparameters such as learning rate, optimizer, training strategy.
   
@@ -246,6 +256,6 @@ $.
 
 ---
 
-###  Thank you!
+#  Thank you!
 
 
