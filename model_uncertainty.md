@@ -245,6 +245,11 @@ $.
 
 
 
+---
+# References 
+- [1] W. He, Z. Jiang, T. Xiao, Z. Xu, and Y. Li, “A survey on uncertainty quantification methods for deep learning,” *arXiv preprint arXiv:2302.13425*, 2023. DOI: https://doi.org/10.48550/arXiv.2302.13425
+
+
 
 ---
 
