@@ -275,6 +275,7 @@ test samples that are far or sparse surrounded by training samples.
     <li>$K_n$: Covariance among training samples</li>
     <li>$K_x$: Covariance between test sample and training samples</li>
     <li>$K^*$: Prior variance of test sample</li>
+    <li>$\mu,\mu^*$: Mean predictions for training and test samples
     <li>Posterior prediction for $y^*$: $$p(y^*|x^*,D_{train},\theta)=N(y|K_x^TK_n^{-1}y,K_{x^*}-K_x^TK_n^{-1}K_x)$$
   </ul>
 </div>
