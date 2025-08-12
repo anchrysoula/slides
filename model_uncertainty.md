@@ -27,7 +27,7 @@ Chrysoula, August 2025
    - Markov Chain Monte Carlo approximation (MCMC)
    - Monte-Carlo (MC) dropout
 -  Ensemble methods
--  Sample distribution-related methods (Not mentioned here!)
+-  Sample distribution-related methods
   
 ---
 
@@ -244,6 +244,45 @@ $.
 - Requires model diversity for accurate uncertainty estimation.
 
 
+
+---
+# Sample distribution-related methods
+- Model uncertainty is related to sample distribution. This includes OOD samples and
+test samples that are far or sparse surrounded by training samples. 
+- Existing methods: 
+    - Gaussian process hybrid neural network 
+    - Distance-aware neural network 
+---
+#  Sample distribution-related methods
+## Gaussian Process (GP) Hybrid Neural Network 
+- A GP defines a prior over functions using training data.
+- It assumes that the outputs $p(y_1,...,y_n)$ follow a multivariate Gaussian distribution:
+  $$ p(y_1,...,y_n)\sim N(\mu(x),\Sigma(x))$$
+  where the covariance matrix $ \Sigma_{ij}=k(x_i,x_j)$ uses a kernel function (e.g. radial basis function)
+  to measure the similarity between pairs of input samples.
+
+--
+# GP Inference
+- Given a new sample $x^*$ the joint distribution of training outputs 
+  $y$ and test output $y^*$ is:
+
+<div style="text-align: center;">
+  <img src="figures/eq.png" width="400">
+</div>
+
+<div style="text-align: left;">
+  <ul>   
+    <li>$K_n$: Covariance among training samples</li>
+    <li>$K_x$: Covariance between test sample and training samples</li>
+    <li>$K^*$: Prior variance of test sample</li>
+    <li>Posterior prediction for $y^*$: $$p(y^*|x^*,D_{train},\theta)=N(y|K_x^TK_n^{-1}y,K_{x^*}-K_x^TK_n^{-1}K_x)$$
+  </ul>
+</div>
+--
+# GP Inference
+- GP methods capture uncertainty related to sample sparsity, eventhough they belong to Bayesian methods.
+- Lower uncertainty: When test sample is in a dense region of training data.
+- High uncertainty: When test sample is in a sparse region.
 
 ---
 # References 
