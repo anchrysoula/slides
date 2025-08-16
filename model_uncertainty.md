@@ -286,6 +286,119 @@ test samples that are far or sparse surrounded by training samples.
 - High uncertainty: When test sample is in a sparse region.
 
 ---
+# Sample distribution-related methods
+## Sparse Gaussian process
+- GP is computationally expensive for large datasets. Inverting a covariance matrix of
+size $n \times n$, where n is the total number of training samples, requires $O(n^3)$ time complexity. 
+- A sparse approximation to the full GP reduces the computation to $O(m^2  n)$, where m is 
+the number of inducing variables.
+- Inducing variables are input-output pairs $\{ \hat{x}_i , \hat{y}_i \}_{i=1}^{m}$
+that can be anywhere in the input space and are not constrained to be part of the training data.
+ - Using inducing variables allows replacing the inversion of the original covariance matrix $K_n$ with
+a low-rank approximation, which only requires inverting an $m\times m$ matrix $K_m$.
+
+--
+## Sparse Gaussian process: How to choose Inducing Variables
+- The goal is to select inducing variables that best represent the training data.
+- A common approach is to choose inducing variables that maximize the likelihood of the training data.
+- The locations of the inducing variables and the hyperparameters of the Gaussian Process are optimized by maximizing the likelihood.
+- The training data likelihood is obtained by by marginalizing over the inducing variables
+in the joint distribution of the training data and inducing variables.
+
+--
+## Limitations of Gaussian Processes
+- GPs assume that all target variables follow a joint Gaussian distribution and this 
+limits their ability to capture diverse relationships in large datasets.
+- GP relies heavily on kernel functions to measure similarity between samples by
+transforming input features into high-dimensional space.
+- Challenge to construct appropriate kernel functions to extract hierarchical features
+for high dimensional structured data.
+- To adress these limitations:
+   - Deep Kernel Learning 
+   - Deep (Compositional) Gaussian Process
+  
+--
+##  Sparse Gaussian process: Deep kernel learning
+- Deep kernel learning combines the capability of deep neural networks (DNNs)
+  with Gaussian Processes (GPs) to learn flexible representations.
+- DNNs can learn meaningful representations from high-dimensional data, 
+which helps overcome the fixed kernel limitations of traditional GPs.
+- Kernel transformation: the standard GP kernel: $K_\theta(x_i,x_j)$ is transformed 
+to $K_\theta (g(x_i;w),g(x_j;w))$, where:
+  - $g(\cdot;w)$ is the neural network parameterized with w.
+  - $K_\theta$ is the base kernel function (e.g., radial basis function)
+of GP.
+- The DNN transformation can capture non-linear and hierarchical structure in
+high-dimensional data.
+- The GP with the base kernel is applied to the final layer of the DNN,
+making predictions based on the learned latent features.
+
+--
+## Sparse Gaussian process: Deep (Compositional) Gaussian Process
+-  It focuses on function composition, inspired by the architecture of DNN.
+-  It is a model in which each layer is a Gaussian Process and the output of 
+one GP is the input to the next layer.
+- The recursive composition of GPs yields a more complex distribution over the 
+predicted target variables.
+- The forward propagation and joint probability distribution of the model are respectively:
+$$ y=f_L(f_{L-1}(\dots f_1(x))) $$ and $$ p(y,f_L,\dots f_1|x)\sim p(y|f_L)\prod_{i=2}^{L}
+p(f_i|f_{i-1})p(f_1|x)$$
+where each function $f(\cdot)$ represents a GP, the intermediate distributions
+follow Gaussian distributions and the final distribution captures a more complex 
+distribution.
+
+--
+## Sparse Gaussian process: Deep (Compositional) Gaussian Process
+- Challenge: the computation of the data likelihood $p(y|x)$, because 
+it's not possible to analytically marginalize the hidden layers $f_i$.
+- Solution to the challenge: variational inference, which introduces inducing points
+on each hidden layer and optimizes the variational distribution $q(f_i)$.
+- The marginal likelihood lower bound is computed by propagating 
+the variational approximation through each layer of the model.
+- This framework supports the integration of incomplete or uncertain observations 
+by placing a prior distribution over the input variables 𝑥.
+
+
+--
+## Illustration of deep kernel learning and deep (compositional) Gaussian process
+<div style="text-align: center;">
+  <img src="figures/deep_kernel.png" width="900">
+</div>
+---
+# Distance-aware neural network
+- It is inspired by Gaussian Processes and quantifies the distance between samples in the input space with a metric $||\cdot||_X$.
+- The goal is to learn a hidden representation $h(x)$ that preserves meaningful distances between samples.
+- Issue: feature collapse, which means DNN can map both in-distribution and out-of-distribution samples to similar latent features. This causes the model
+to be overconfident on unfamiliar inputs.
+--
+
+# Distance-aware neural network
+- To prevent feature collapse: sensitivity, smoothness and bi-Lipschitz constraints are applied.
+   - Sensitivity: small changes in input should result in small changes in feature representation. 
+   - Smoothness: small changes in input should not cause dramatic changes in the output.
+   - bi-Lipschitz: ensures both sensitivity and smoothness by bounding feature changes: $$ L_1 * \|x - x'\|_X < \|h_\theta(x) - h_\theta(x')\|_H < L_2 * \|x - x'\|_X $$
+   
+--
+# Distance-aware neural network
+##  Approaches to enforce bi-Lipschitz constraints
+- Spectral Normalization:
+   - Normalizes weight matrices using their spectral norm.
+   - Ensures Lipschitz constant is $L<1$.
+   - Fast and effective for practical implementation.
+
+- Gradient penalty: 
+   - Introduces a loss penalty: the squared gradient at each input sample $\nabla_x^2 h_\theta(x)$.
+   - Adds a soft constraint to control the Lipschitz coefficients.
+   - More computationally intensive than spectral normalization.
+
+
+
+
+
+
+
+
+---
 # References 
 - [1] W. He, Z. Jiang, T. Xiao, Z. Xu, and Y. Li, “A survey on uncertainty quantification methods for deep learning,” *arXiv preprint arXiv:2302.13425*, 2023. DOI: https://doi.org/10.48550/arXiv.2302.13425
 
