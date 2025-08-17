@@ -148,7 +148,7 @@ $$
 - It uses a proposal distribution $T(\theta'|\theta)$ to suggest new states.
 - The proposal samples are stochastically accepted with acceptance probability:
 $$
-\alpha(\theta', \theta) = \frac{T(\theta' \mid \theta) \, p(\theta' \mid x)}{T(\theta \mid \theta') \, p(\theta \mid x)}
+\alpha(\theta', \theta) = \frac{T(\theta' \mid \theta)  p(\theta' \mid x)}{T(\theta \mid \theta') p(\theta \mid x)}
 $$
 - The new sample is accepted if a random variable $\mu \sim Unif(0,1)$ is less than $\alpha$, otherwise retains the previous sample.
 
