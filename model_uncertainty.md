@@ -137,7 +137,7 @@ where $\hat \theta$ is the MAP estimate and $H$ is the Hessian matrix.
 - It constructs an ergodic Markov chain whose stationary distribution is the posterior and draws samples $\theta_i \sim p(\theta|X,Y)$ from the chain.
 - The inference step of BNNs is approximated by:
 $$
-p(y^* \mid x^*, X, Y) = \int p(y^* \mid \mathbf{x}^*, \boldsymbol{\theta}) \ p(\boldsymbol{\theta} \mid X, Y) \, d\boldsymbol{\theta} 
+p(y^* \mid x^*, X, Y) = \int p(y^* \mid \mathbf{x}^*, \boldsymbol{\theta}) \ p(\boldsymbol{\theta} \mid X, Y) \ d\boldsymbol{\theta} 
 \approx \frac{1}{N} \sum_{i=1}^{N} p(y^* \mid x^*, \boldsymbol{\theta}_i)
 $$
 
@@ -224,7 +224,7 @@ $.
    - For classification: average entropy is used.
 ## Second strategy: Different neural network architectures
 - The number of layers, hidden neurons and activation functions is varying.
-- Accounts for uncertainty from model misspecification
+- Accounts for uncertainty from model misspecification.
   
 --
 
@@ -250,15 +250,15 @@ $.
 - Model uncertainty is related to sample distribution. This includes OOD samples and
 test samples that are far or sparse surrounded by training samples. 
 - Existing methods: 
-    - Gaussian process hybrid neural network 
-    - Distance-aware neural network 
+    - Gaussian process hybrid neural network.
+    - Distance-aware neural network.
 ---
 #  Sample distribution-related methods
 ## Gaussian Process (GP) Hybrid Neural Network 
 - A GP defines a prior over functions using training data.
 - It assumes that the outputs $p(y_1,...,y_n)$ follow a multivariate Gaussian distribution:
   $$ p(y_1,...,y_n)\sim N(\mu(x),\Sigma(x))$$
-  where the covariance matrix $ \Sigma_{ij}=k(x_i,x_j)$ uses a kernel function (e.g. radial basis function)
+  where $\mu(x)$ is the mean function and the covariance matrix $ \Sigma_{ij}=k(x_i,x_j)$ uses a kernel function (e.g. radial basis function)
   to measure the similarity between pairs of input samples.
 
 --
@@ -289,7 +289,7 @@ test samples that are far or sparse surrounded by training samples.
 # Sample distribution-related methods
 ## Sparse Gaussian process
 - GP is computationally expensive for large datasets. Inverting a covariance matrix of
-size $n \times n$, where n is the total number of training samples, requires $O(n^3)$ time complexity. 
+size $n \times n$, where n is the total number of training samples requires $O(n^3)$ time complexity. 
 - A sparse approximation to the full GP reduces the computation to $O(m^2  n)$, where m is 
 the number of inducing variables.
 - Inducing variables are input-output pairs $\{ \hat{x}_i , \hat{y}_i \}_{i=1}^{m}$
@@ -302,7 +302,7 @@ a low-rank approximation, which only requires inverting an $m\times m$ matrix $K
 - The goal is to select inducing variables that best represent the training data.
 - A common approach is to choose inducing variables that maximize the likelihood of the training data.
 - The locations of the inducing variables and the hyperparameters of the Gaussian Process are optimized by maximizing the likelihood.
-- The training data likelihood is obtained by by marginalizing over the inducing variables
+- The training data likelihood is obtained by marginalizing over the inducing variables
 in the joint distribution of the training data and inducing variables.
 
 --
