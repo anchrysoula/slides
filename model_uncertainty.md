@@ -292,7 +292,7 @@ test samples that are far or sparse surrounded by training samples.
 size $n \times n$, where n is the total number of training samples requires $O(n^3)$ time complexity. 
 - A sparse approximation to the full GP reduces the computation to $O(m^2  n)$, where m is 
 the number of inducing variables.
-- Inducing variables are input-output pairs $\{ \hat{x}_i , \hat{y}_i \}_{i=1}^{m}$
+- Inducing variables are input-output pairs $\{(\hat{x}_i , \hat{y}_i ) \}$ for $ i=1,...,m$
 that can be anywhere in the input space and are not constrained to be part of the training data.
  - Using inducing variables allows replacing the inversion of the original covariance matrix $K_n$ with
 a low-rank approximation, which only requires inverting an $m\times m$ matrix $K_m$.
